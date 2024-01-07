@@ -1,14 +1,24 @@
 
 type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends (number | boolean | undefined | null) ? T[K] : DeepReadonly<T[K]>
+    readonly [K in keyof T]: T[K] extends {[K: string]: any} ? DeepReadonly<T[K]> : T[K];
 };
 
 
 type DeepRequireReadonly<T> = {
-    readonly [K in keyof T]-?: T[K] extends (number | boolean | undefined | null) ? T[K] : DeepReadonly<T[K]>
+    readonly [K in keyof T]-?: T[K] extends {[K: string]: any} ? DeepReadonly<T[K]> : T[K];
 };
 
 type UpperCaseKeys<T> = {
-    [K in keyof T]: K extends string ?
-      K extends Uppercase<K> ? false : T[K] : T[K];
-  }
+    [K in keyof T & string as Uppercase<K>]: T[K];
+};
+
+type ObjectToPropertyDescriptor<T> =  {
+    [K in keyof T]: {
+        value: T[K],
+        writable: false, 
+        configurable: false
+    };
+};
+
+
+
